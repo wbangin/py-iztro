@@ -25,21 +25,21 @@ def format_star(star: dict) -> str:
 def print_ziwei_chart(data: dict):
     """以人类可读的格式打印紫微斗数命盘。"""
     
-    print("--- 个人基本信息 ---")
-    print(f"性别: {data.get('gender')}")
-    print(f"阳历: {data.get('solarDate')}")
-    print(f"阴历: {data.get('lunarDate')}")
-    print(f"四柱: {data.get('chineseDate')}")
-    print(f"时辰: {data.get('time')} ({data.get('timeRange')})")
-    print(f"星座: {data.get('sign')}")
-    print(f"生肖: {data.get('zodiac')}")
-    print("-" * 20)
-    print(f"命主: {data.get('soul')}")
-    print(f"身主: {data.get('body')}")
-    print(f"五行局: {data.get('fiveElementsClass')}")
-    print(f"身宫地支: {data.get('earthlyBranchOfBodyPalace')}")
-    print(f"命宫地支: {data.get('earthlyBranchOfSoulPalace')}")
-    print("\n" + "="*25 + " 十二宫位详情 " + "="*25)
+    print("[个人基本信息]")
+    print(f"  性别: {data.get('gender')}")
+    print(f"  阳历: {data.get('solarDate')}")
+    print(f"  阴历: {data.get('lunarDate')}")
+    print(f"  四柱: {data.get('chineseDate')}")
+    print(f"  时辰: {data.get('time')} ({data.get('timeRange')})")
+    print(f"  星座: {data.get('sign')}")
+    print(f"  生肖: {data.get('zodiac')}")
+    #print("-" * 20)
+    print(f"  命主: {data.get('soul')}")
+    print(f"  身主: {data.get('body')}")
+    print(f"  五行局: {data.get('fiveElementsClass')}")
+    print(f"  身宫地支: {data.get('earthlyBranchOfBodyPalace')}")
+    print(f"  命宫地支: {data.get('earthlyBranchOfSoulPalace')}")
+    print("\n" +"[十二宫位详情]")
 
     palaces = data.get('palaces', [])
     # 按宫位索引排序，确保顺序正确
@@ -81,13 +81,13 @@ def print_ziwei_chart(data: dict):
         ages = palace.get('ages', [])
         if ages:
             print(f"  流年: {', '.join(map(str, ages))}")
-        print("-" * 15)
+        #print("-" * 15)
 
 def main():
     parser = argparse.ArgumentParser(
         description="根据公历生日和时间排紫微斗数命盘，并以易读格式输出。",
         epilog="""使用示例:
-  python iztra.py "2000-0501-01 09:00" 男
+  python iztra.py "2000-02-02 09:30" 男
 """,
         formatter_class=argparse.RawTextHelpFormatter
     )
@@ -103,17 +103,24 @@ def main():
 
     args = parser.parse_args()
 
+
+
     try:
         # 从参数中解析日期和小时
         date_part, time_part = args.datetime.split()
         hour = int(time_part.split(':')[0])
+        time_index=hour/2
     except ValueError:
         print("错误：日期时间格式不正确。请确保格式为 'YYYY-MM-DD HH:MM'。")
         return
-
+    print("【排盘输入信息】")
+    print(f"  公历时间: {args.datetime}")
+    print(f"  性别: {args.gender}")
+    print(f"  时辰: {time_index}")
+    print("-" * 25, "\n")
     astro = Astro()
     # 使用从命令行获取的参数进行排盘
-    result = astro.by_solar(date_part, hour, args.gender)
+    result = astro.by_solar(date_part, time_index, args.gender)
     ziwei_data = result.model_dump(by_alias=True)
     print_ziwei_chart(ziwei_data)
 
