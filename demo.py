@@ -25,21 +25,21 @@ def format_star(star: dict) -> str:
 def print_ziwei_chart(data: dict):
     """以人类可读的格式打印紫微斗数命盘。"""
     
-    print("[个人基本信息]")
-    print(f"  性别: {data.get('gender')}")
-    print(f"  阳历: {data.get('solarDate')}")
-    print(f"  阴历: {data.get('lunarDate')}")
-    print(f"  四柱: {data.get('chineseDate')}")
-    print(f"  时辰: {data.get('time')} ({data.get('timeRange')})")
-    print(f"  星座: {data.get('sign')}")
-    print(f"  生肖: {data.get('zodiac')}")
-    #print("-" * 20)
-    print(f"  命主: {data.get('soul')}")
-    print(f"  身主: {data.get('body')}")
-    print(f"  五行局: {data.get('fiveElementsClass')}")
-    print(f"  身宫地支: {data.get('earthlyBranchOfBodyPalace')}")
-    print(f"  命宫地支: {data.get('earthlyBranchOfSoulPalace')}")
-    print("\n" +"[十二宫位详情]")
+    print("*** 个人基本信息 ***")
+    print(f"性别: {data.get('gender')}")
+    print(f"阳历: {data.get('solarDate')}")
+    print(f"阴历: {data.get('lunarDate')}")
+    print(f"四柱: {data.get('chineseDate')}")
+    print(f"时辰: {data.get('time')} ({data.get('timeRange')})")
+    print(f"星座: {data.get('sign')}")
+    print(f"生肖: {data.get('zodiac')}")
+    print("*" * 20)
+    print(f"命主: {data.get('soul')}")
+    print(f"身主: {data.get('body')}")
+    print(f"五行局: {data.get('fiveElementsClass')}")
+    print(f"身宫地支: {data.get('earthlyBranchOfBodyPalace')}")
+    print(f"命宫地支: {data.get('earthlyBranchOfSoulPalace')}")
+    print("\n" + "="*10 + " 十二宫位详情 " + "="*10)
 
     palaces = data.get('palaces', [])
     # 按宫位索引排序，确保顺序正确
@@ -50,7 +50,7 @@ def print_ziwei_chart(data: dict):
         heavenly_stem = palace.get('heavenlyStem', '?')
         earthly_branch = palace.get('earthlyBranch', '?')
         
-        print(f"\n {palace_name}宫 (天干: {heavenly_stem}, 地支: {earthly_branch}):")
+        print(f"\n *** {palace_name}宫 (天干: {heavenly_stem}, 地支: {earthly_branch}):")
 
         if palace.get('isBodyPalace'):
             print("  [身宫]")
@@ -72,7 +72,9 @@ def print_ziwei_chart(data: dict):
         #print("-" * 15)
         print(f"  长生十二神: {palace.get('changsheng12')}")
         print(f"  博士十二神: {palace.get('boshi12')}")
-        
+        print(f"  岁前十二神: {palace.get('suiqian12')}")
+        print(f"  将前十二神: {palace.get('jiangqian12')}")
+
         decadal = palace.get('decadal', {})
         decadal_range = decadal.get('range', [])
         if decadal_range:
@@ -81,7 +83,7 @@ def print_ziwei_chart(data: dict):
         ages = palace.get('ages', [])
         if ages:
             print(f"  流年: {', '.join(map(str, ages))}")
-        #print("-" * 15)
+        print("*" * 3)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -109,7 +111,7 @@ def main():
         # 从参数中解析日期和小时
         date_part, time_part = args.datetime.split()
         hour = int(time_part.split(':')[0])
-        time_index=hour/2
+        time_index=hour//2
     except ValueError:
         print("错误：日期时间格式不正确。请确保格式为 'YYYY-MM-DD HH:MM'。")
         return
@@ -121,6 +123,7 @@ def main():
     astro = Astro()
     # 使用从命令行获取的参数进行排盘
     result = astro.by_solar(date_part, time_index, args.gender)
+    #print(result.model_dump_json(by_alias=True, indent=4))
     ziwei_data = result.model_dump(by_alias=True)
     print_ziwei_chart(ziwei_data)
 
