@@ -111,7 +111,7 @@ def main():
         # 从参数中解析日期和小时
         date_part, time_part = args.datetime.split()
         hour = int(time_part.split(':')[0])
-        time_index=hour//2
+        time_index=(hour-1)//2 + 1
     except ValueError:
         print("错误：日期时间格式不正确。请确保格式为 'YYYY-MM-DD HH:MM'。")
         return
